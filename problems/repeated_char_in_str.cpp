@@ -1,29 +1,43 @@
 #include <iostream>
 #include <string>
-#include <set>
+#include <unordered_map>
 
 using namespace std;
 
-set<char> setOfChars;
 
-char first_dup_char(string s){
-	int i;
-	set<char>::iterator it;
+string first_dup_char(string s){
+	int i; string ret_str{};
+	unordered_map<char, int> map_of_chars {};
+	unordered_map<char,int>::iterator it;
 	for(i=0; i<s.length(); i++){
-		it = setOfChars.find(s[i]);
-		if (it != setOfChars.end()){
-			return s[i];
-		} else {
-			setOfChars.insert(s[i]);
+		if(s[i] != ' '){
+			it = map_of_chars.find(s[i]);
+			if (it != map_of_chars.end()){
+				it->second += 1;
+				cout << "inserting : "<< s[i] << " :: count: "<<it->second << endl;
+			} else {
+				map_of_chars.insert(pair<char,int>(s[i], 1));
+			}
 		}
 	}
-	return '\0';
+	for (auto i: s){
+		//cout << "searching: " << i << endl;
+		auto it = map_of_chars.find(i);
+		if (it != map_of_chars.end()){
+			if(it->second > 1){
+				ret_str = it->first;
+				break;
+			}
+		}
+	}
+	
+	return ret_str;
 }
 
 
 int main(){
-	string s("this th as a repeated char");
-	char c = first_dup_char(s);
+	string s("asrthis s th as a repeated char");
+	string c = first_dup_char(s);
 	cout << "repeated char : " << c << endl ;
 	return 0;
 }
